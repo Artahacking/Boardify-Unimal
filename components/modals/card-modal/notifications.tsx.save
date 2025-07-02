@@ -1,0 +1,38 @@
+import { BellIcon } from "@heroicons/react/24/outline"; // Versi Heroicons v2
+interface NotificationProps {
+  messages: { content: string }[];
+}
+
+const NotificationButton: React.FC<NotificationProps> = ({ messages }) => {
+  return (
+    <div className="inline-block ml-2 float-right">
+      <button className="relative p-2 bg-yellow-500 text-white rounded shadow-lg hover:bg-yellow-600 transition focus:outline-none focus:ring-2 focus:ring-y>
+        <BellIcon className="h-3 w-3" />
+        <span className="absolute -top-1 -right-2 p-1 bg-red-500 text-white rounded-full text-xs">
+          {messages.length}
+        </span>
+      </button>
+    </div>
+  );
+};
+
+export default NotificationButton;
+import { BellIcon } from "@heroicons/react/24/outline"; // Versi Heroicons v2
+interface NotificationProps {
+  messages: { content: string }[];
+}
+
+const NotificationButton: React.FC<NotificationProps> = ({ messages }) => {
+  return (
+    <div className="inline-block ml-2 float-right">
+      <button className="relative p-2 bg-yellow-500 text-white rounded shadow-lg hover:bg-yellow-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        <BellIcon className="h-3 w-3" />
+        <span className="absolute -top-1 -right-2 p-1 bg-red-500 text-white rounded-full text-xs">
+          {messages.length}
+        </span>
+      </button>
+    </div>
+  );
+};
+
+export default NotificationButton;

@@ -1,0 +1,22 @@
+.mention-popup {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    position: absolute;
+    z-index: 1000;
+}
+.mention-popup .items {
+    display: flex;
+    flex-direction: column;
+}
+.mention-popup .item {
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.mention-popup .item:hover,
+.mention-popup .item.is-selected {
+    background: #f0f0f0;
+}

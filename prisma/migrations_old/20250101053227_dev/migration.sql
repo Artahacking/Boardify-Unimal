@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `message` ADD COLUMN `isSendEmail` INTEGER NOT NULL DEFAULT 0;

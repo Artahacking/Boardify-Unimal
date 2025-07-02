@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Board {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  orgId         String
+  title         String
+  imageId       String
+  imageThumbUrl String
+  imageFullUrl  String
+  imageUserName String
+  imageLinkHTML String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  adminEmail    String   @default("bagasimam01@gmail.com")
+  lists         List[]
+
+  @@map("board")
+}
+
+model List {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  order     Int
+  boardId   String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cards     Card[]
+  board     Board    @relation(fields: [boardId], references: [id])
+
+  @@map("list")
+}
+
+model Card {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String?
+  order         Int
+  listId        String          @db.ObjectId
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  list          List            @relation(fields: [listId], references: [id])
+  CardHasUsers  CardHasUsers[]
+  file          File[]
+  messages      Message[]
+  Notifications Notifications[]
+
+  @@map("card")
+}
+
+model AuditLog {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  orgId       String
+  action      ACTION
+  entityId    String
+  entityType  ENTITY_TYPE
+  entityTitle String
+  userId      String
+  userImage   String
+  userName    String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("auditlog")
+}
+
+model OrgLimit {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  orgId     String   @unique
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orglimit")
+}
+
+model OrgSubscription {
+  id                     String    @id @default(auto()) @map("_id") @db.ObjectId
+  orgId                  String    @unique
+  stripeCustomerId       String?   @map("stripe_customer_id") @unique
+  stripeSubscriptionId   String?   @map("stripe_subscription_id") @unique
+  stripePriceId          String?   @map("stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
+
+  @@map("orgsubscription")
+}
+
+model Message {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String
+  message         String
+  time            DateTime       @default(now())
+  cardId          String         @db.ObjectId
+  isReadAdmin     Int            @default(0)
+  profileImageUrl String
+  sender          String
+  updatedAt       DateTime       @updatedAt
+  isSendEmail     Int            @default(0)
+  card            Card           @relation(fields: [cardId], references: [id])
+  Notifications   Notifications?
+
+  @@map("message")
+}
+
+model File {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  url       String
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cardId    String   @db.ObjectId
+  card      Card     @relation(fields: [cardId], references: [id])
+
+  @@map("file")
+}
+
+model Notifications {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  userReadId String
+  messageId  String  @db.ObjectId @unique
+  cardId     String  @db.ObjectId
+  card       Card    @relation(fields: [cardId], references: [id])
+  message    Message @relation(fields: [messageId], references: [id])
+
+  @@map("notifications")
+}
+
+//model CardHasUsers {
+  //id     String @id @default(auto()) @map("_id") @db.ObjectId
+  //cardId String @db.ObjectId
+  //userId String
+  //card   Card   @relation(fields: [cardId], references: [id])
+
+  //@@map("cardhasusers")
+//}
+
+model CardHasUsers {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  cardId String @db.ObjectId
+  userId String
+  card   Card   @relation(fields: [cardId], references: [id])
+
+  @@map("cardhasusers")
+}
+
+enum ACTION {
+  CREATE
+  UPDATE
+  DELETE
+  SEND
+}
+
+enum ENTITY_TYPE {
+  BOARD
+  LIST
+  CARD
+  MESSAGE
+}
